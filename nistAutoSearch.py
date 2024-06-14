@@ -10,6 +10,7 @@ import subprocess
 import time
 import numpy as np
 import pandas as pd 
+import ctypes
 
 FULL_PATH_TO_MAIN_LIBRARY = "C:\\NISTDEMO\\MSSEARCH"
 FULL_PATH_TO_WORK_DIR = "C:\\MS\\DATA\\RDA_Target_NIST.txt" #THE FOLDER WHERE THE RDA IS 
@@ -23,55 +24,78 @@ def removeLast(string):
     
     return new
 
+def window():
+    user32 = ctypes.windll.user32
+    hwnd = user32.GetForegroundWindow()
+    print(f"Handle of the current active window: {hwnd}")
+    return hwnd
 
-FULL_PATH_NO_TXT = removeLast(FULL_PATH_TO_WORK_DIR)
-
-with open (FULL_PATH_TO_MAIN_LIBRARY +'\\AUTOIMP.MSD', 'w') as file:
+def createFiles():
     
-    file.write(FULL_PATH_NO_TXT+'\\second.txt')  #try this except ERROR NOT FILE FOUND, \\ ADDED? MAKE SURE RIGHT ADDRESS
-
-#PARA VERIFICAR QUE LO QUE ESCRIBES ESTA BIEN 
-# with open (FULL_PATH_TO_MAIN_LIBRARY +'\\AUTOIMP.MSD', 'r') as file:
+    with open (FULL_PATH_TO_MAIN_LIBRARY +'\\AUTOIMP.MSD', 'w') as file:
+        
+        file.write(FULL_PATH_NO_TXT+'\\second.txt')  #try this except ERROR NOT FILE FOUND, \\ ADDED? MAKE SURE RIGHT ADDRESS
     
-#     auto_file = file.readline().strip()
-
-import ctypes
-
-user32 = ctypes.windll.user32
-hwnd = user32.GetForegroundWindow()
-print(f"Handle of the current active window: {hwnd}")
-
-
-
-with open(FULL_PATH_NO_TXT+'\\second.txt', 'w') as f:  #FULL_PATH_TO_WORK_DIR + 'second.txt'
+    #PARA VERIFICAR QUE LO QUE ESCRIBES ESTA BIEN 
+    # with open (FULL_PATH_TO_MAIN_LIBRARY +'\\AUTOIMP.MSD', 'r') as file:
+        
+    #     auto_file = file.readline().strip()
     
-    f.write(FULL_PATH_TO_WORK_DIR + f' APPEND\n{hwnd}')   #HAY QUE ESCRIBIR MAS AQUI FALTA EL OVERWRTIE EL 10 Y E L724 O ALGO DE ESO 
+    with open(FULL_PATH_NO_TXT+'\\second.txt', 'w') as f:  #FULL_PATH_TO_WORK_DIR + 'second.txt'
+        
+        f.write(FULL_PATH_TO_WORK_DIR + f' OVERWRITE\n{hwnd}')   #HAY QUE ESCRIBIR MAS AQUI FALTA EL OVERWRTIE EL 10 Y E L724 O ALGO DE ESO 
+        
+
+def exCmd():
     
-
-
-pathh = "C:\\NISTDEMO\\MSSEARCH\\nistms$.exe"
-# print(out, err)
-#command instrument activates the search window, write alone and then with PAR?
-#FUNCIONAAA SI NO PONES EL SHEEEELL
-# R = subprocess.run([f"{pathh}", '/instrument','/PAR=4'], capture_output= True, text = True)
-R = subprocess.run([f"{pathh}", '/instrument','/PAR=2'], capture_output= True, text = True)
-
-print(R.returncode, f'  error: {R.stderr}', R.stdout)
-
-
-time.sleep(5)
-c=1 
-print('Start loading...')
-while True:
+    pathh = "C:\\NISTDEMO\\MSSEARCH\\nistms$.exe"
+    # print(out, err)
+    #command instrument activates the search window, write alone and then with PAR?
+    #FUNCIONAAA SI NO PONES EL SHEEEELL
+    # R = subprocess.run([f"{pathh}", '/instrument','/PAR=4'], capture_output= True, text = True)
+    R = subprocess.run([f"{FULL_PATH_TO_MAIN_LIBRARY}\\nistms$.exe", '/instrument','/PAR=2'], capture_output= True, text = True)
+    # R = subprocess.Popen([f"{FULL_PATH_TO_MAIN_LIBRARY}\\nistms$.exe", '/instrument','/PAR=4'], stdout = subprocess.PIPE, stderr = subprocess.PIPE, text = True)
     
-#     result = subprocess.run(["cd", f"{FULL_PATH_TO_MAIN_LIBRARY}\\nistms$.exe", "/instrument", "/PAR=4"], shell = True, capture_output= True, text=True)
-    if  os.path.exists(FULL_PATH_TO_MAIN_LIBRARY+'\\SRCREADY.TXT'):
-        print ('Success!! Hits retrieved!')
-        break
-    else:
-        time.sleep(10)
-        print(f'Retrieving hits...{c}0 s')
-        c+=1
+    print(R.returncode, f'  error: {R.stderr}', R.stdout)
+    
+    # while R.poll() is None:
+    #     print("Process is still running...")
+    #     time.sleep(1)  # Wait for 1 second before checking again
+    
+    
+    time.sleep(5)
+    c=1 
+    print('Start loading...')
+    while True:
+        
+    #     result = subprocess.run(["cd", f"{FULL_PATH_TO_MAIN_LIBRARY}\\nistms$.exe", "/instrument", "/PAR=4"], shell = True, capture_output= True, text=True)
+        if  os.path.exists(FULL_PATH_TO_MAIN_LIBRARY+'\\SRCREADY.TXT'):
+            print ('Success!! Hits retrieved!')
+            break
+        else:
+            time.sleep(10)
+            print(f'Retrieving hits...{c}0 s')
+            c+=1
+
+
+
+if __name__ ==  "__main__" :
+    
+    FULL_PATH_NO_TXT = removeLast(FULL_PATH_TO_WORK_DIR)
+    
+    hwnd = window()
+    
+    createFiles()
+
+    exCmd()
+
+
+
+
+
+
+
+
 
 
 # path = "C:\\NISTDEMO\\MSSEARCH\\"

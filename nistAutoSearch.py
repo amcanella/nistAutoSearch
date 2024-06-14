@@ -78,6 +78,17 @@ def exCmd():
             print(f'Retrieving hits...{c}0 s')
             c+=1
 
+def lineChecker(line):
+    #Checks whether the name has a semicolon
+    checked = str()
+    start = line.find("<<")
+    end = line.find(">>")
+    colon = line.find(';', start, end)
+    if  colon != -1:
+        checked = line[:colon] + ' ' + line[colon+1:]
+    else: 
+        checked = line
+    return checked
 
 
 def logReader():
@@ -105,7 +116,10 @@ def logReader():
                 
                   if x.find('Hit') != -1:
                     hit_str = x.replace(':', ';', 1).replace(' ', ':', 1)
-                    beta = [string.split(':') for string in hit_str.split(';')]
+                    #Check that name has no ';' in it
+                    hit_str_checked = lineChecker(hit_str) 
+                    hit_checked = hit_str_checked.split(';') 
+                    beta = [string.split(':') for string in hit_checked]
                     
                     beta[1].insert(0, 'Name')
                     beta[2].insert(0, 'Formula')
@@ -145,7 +159,7 @@ if __name__ ==  "__main__" :
     
     createFiles()
 
-    exCmd()
+    # exCmd()
     
     d = logReader()
     

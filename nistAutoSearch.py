@@ -11,8 +11,9 @@ import time
 import numpy as np
 import pandas as pd 
 import ctypes
+import datetime
 
-FULL_PATH_TO_MAIN_LIBRARY = "C:\\NISTDEMO\\MSSEARCH"
+FULL_PATH_TO_MAIN_LIBRARY = "C:\\NISTDEMO\\MSSEARCH" #THE FOLDER WHERE THE PROGRAM IS 
 FULL_PATH_TO_WORK_DIR = "C:\\MS\\DATA\\RDA_Target_NIST.txt" #THE FOLDER WHERE THE RDA IS 
 
 
@@ -24,7 +25,7 @@ def removeLast(string):
     
     return new
 
-def window():
+def wndN():
     user32 = ctypes.windll.user32
     hwnd = user32.GetForegroundWindow()
     print(f"Handle of the current active window: {hwnd}")
@@ -79,82 +80,76 @@ def exCmd():
 
 
 
+def logReader():
+    #Function that reads the log files
+    print('Reading log files...')
+    log_list = [['Mets',[]],['Label', []]]
+    c=0 #counter
+    with open(FULL_PATH_TO_MAIN_LIBRARY + '\\SRCRESLT.TXT' , 'r') as f:
+        
+          for line in f:
+        #     # if number == 57:
+                # x = f.readline()
+                  x = line.strip() #quita la \n del final 
+                  if x.find('Unknown:') != -1:
+                    
+                      gamma1, *gamma2_l = x.strip('Unknown: ').split('             ')[0].split('   ')
+                      gamma2 = gamma2_l[0]
+                      mist = 'Compound' #possible string attached
+                      if gamma2.find(mist) != -1: #filter to remove possible string attached
+                          gamma2 = gamma2[:gamma2.find(mist)].strip()
+                 
+                # # dejar comentado
+                #     log_list[0][1].append(gamma1)
+                #     log_list[1][1].append(gamma2)
+                
+                  if x.find('Hit') != -1:
+                    hit_str = x.replace(':', ';', 1).replace(' ', ':', 1)
+                    beta = [string.split(':') for string in hit_str.split(';')]
+                    
+                    beta[1].insert(0, 'Name')
+                    beta[2].insert(0, 'Formula')
+                    beta.insert(0, ['Mets', gamma1]) #GAMMA 
+                    beta.insert(1, ['Label', gamma2]) #GAMMA 2
+                    
+                    # log_list[0][1].append(2)
+                    # log_list[1][1].append(3)
+                    
+                    if c == 0:
+                        beta = [[element[0],[element[1]]] for element in beta]
+                        log_list.extend(beta)
+                        log_dict = {element[0]:element[1] for element in log_list}  
+                    
+                    if c!= 0:
+                        for item in beta:
+                            key = item[0]
+                            value = item[1]
+                            if key in log_dict:
+                                log_dict[key].append(value)
+                    c = 1
+                    # log_list.extend()
+                    
+                    # beta[1] = [] ]
+                    
+    return log_dict
+
+
 if __name__ ==  "__main__" :
     
     FULL_PATH_NO_TXT = removeLast(FULL_PATH_TO_WORK_DIR)
+    now = datetime.datetime.now()
+    nowf = now.strftime("%Y-%m-%d-%H-%M-%S")
     
-    hwnd = window()
+    
+    hwnd = wndN() #window handler number 
     
     createFiles()
 
     exCmd()
-
-
-
-
-
-
-
-
-
-
-# path = "C:\\NISTDEMO\\MSSEARCH\\"
-
-# 
-# # data = pd.read_csv(path + 'NISTLOG.TXT', header = 0, delimiter = ':', nrows=2)
-# # data = pd.read_csv(path + 'NISTLOG.TXT', header = 0, usecols= ['Unknown'], nrows = 1)
-# log_list = [['Mets',[]],['Label', []]]
-# c=0 #counter
-# with open(FULL_PATH_TO_MAIN_LIBRARY + 'NISTLOG.TXT' , 'r') as f:
     
-#      for line in f:
-#     #     # if number == 57:
-#             # x = f.readline()
-#              x = line.strip() #quita la \n del final 
-#              if x.find('Unknown:') != -1:
-                
-#                  gamma1, *gamma2_l = x.strip('Unknown: ').split('             ')[0].split('   ')
-#                  gamma2 = gamma2_l[0]
-#                  mist = 'Compound' #possible string attached
-#                  if gamma2.find(mist) != -1: #filter to remove possible string attached
-#                      gamma2 = gamma2[:gamma2.find(mist)].strip()
-             
-#             # # dejar comentado
-#             #     log_list[0][1].append(gamma1)
-#             #     log_list[1][1].append(gamma2)
-            
-#              if x.find('Hit') != -1:
-#                 hit_str = x.replace(':', ';', 1).replace(' ', ':', 1)
-#                 beta = [string.split(':') for string in hit_str.split(';')]
-                
-#                 beta[1].insert(0, 'Name')
-#                 beta[2].insert(0, 'Formula')
-#                 beta.insert(0, ['Mets', gamma1]) #GAMMA 
-#                 beta.insert(1, ['Label', gamma2]) #GAMMA 2
-                
-#                 # log_list[0][1].append(2)
-#                 # log_list[1][1].append(3)
-                
-#                 if c == 0:
-#                     beta = [[element[0],[element[1]]] for element in beta]
-#                     log_list.extend(beta)
-#                     log_dict = {element[0]:element[1] for element in log_list}  
-                
-#                 if c!= 0:
-#                     for item in beta:
-#                         key = item[0]
-#                         value = item[1]
-#                         if key in log_dict:
-#                             log_dict[key].append(value)
-#                 c = 1
-#                 # log_list.extend()
-                
-#                 # beta[1] = [] ]
-                
-                
-
-# # d = dict(log_list)
-# df = pd.DataFrame(log_dict) #index = [0])
-
-# df.to_excel('out_hits2.xlsx')
-
+    d = logReader()
+    
+    df = pd.DataFrame(d) #index = [0])
+    
+    df.to_excel(f'{FULL_PATH_NO_TXT}\\out_hits2_{nowf}.xlsx')
+    print('Done! Your excel file is ready!')

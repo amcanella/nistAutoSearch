@@ -2,7 +2,7 @@
 
 Automated tool for NIST MS search, data retrieval and storage in excel file.  
 
-## Instructions of use:
+### Instructions of use:
 
 1. Download the latest version of NIST MS Search Program. You can install from: https://chemdata.nist.gov/dokuwiki/doku.php?id=chemdata:nistlibs
 
@@ -13,7 +13,7 @@ FULL_PATH_TO_MAIN_LIBRARY = "C:\\NISTDEMO\\MSSEARCH" #THE FOLDER WHERE THE PROGR
 FULL_PATH_TO_WORK_DIR = "C:\\MS\\DATA\\RDA_Target_NIST.txt" # LOCATION OF RDA FILE, WORK DIRECTORY
 ```
 
-3. Update the number of hits to log (default 5) and make sure the automation is enabled:
+3. Update the number of hits to log (default 5) and make sure the automation is enabled(1):
 
 ```python
 number_hits = 5  #WRITE THE NUMBER OF HITS TO LOG
@@ -22,7 +22,8 @@ automatic = 1   #ACTIVATE THE AUTOMATION
 
 4. Run the script. The hits are stored in an excel file in the 'FULL_PATH_TO_WORK_DIR' under 'out_hits_[date].xlsx' by default.
 
-## Additional
+
+### Additional
 
 - Only in case of error. This should be done automatically when downloading the program, however if it is not, the MS Search user guide suggests that: 
 

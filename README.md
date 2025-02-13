@@ -5,7 +5,9 @@ Automated tool for NIST MS search, data retrieval and storage in excel file.
 Instructions of use:
 
 Download the latest version of NIST MS Search Program.
+
 Update the path variables in the script (first lines). 
+
 If you encounter errors, the user guide suggests that: 
 
 " It may be necessary to determine the location of the NIST MS Search Program files and the location of the NIST MS Search working directory. These may be found in the [NISTMS] section of the WIN.INI file located in the %windir% directory. Below is a typical example of this section: 

@@ -26,7 +26,7 @@ automatic = 1   #ACTIVATE THE AUTOMATION
 
 ### Additional
 
-- Only in case of error. The location of MS Search should be automatically written in Windows' system directory when downloading the program. However if it is not, the MS Search user guide suggests that: 
+- Only in case of ERROR. The location of MS Search should be automatically written in Windows' system directory when downloading the program. However if it is not, the MS Search user guide suggests that: 
 
 " It may be necessary to determine the location of the NIST MS Search Program files and the location of the NIST MS Search working directory. These may be found in the [NISTMS] section of the WIN.INI file located in the %windir% directory. Below is a typical example of this section, you must write your own: 
 

@@ -184,4 +184,4 @@ if __name__ ==  "__main__" :
     
     df.to_excel(f'{FULL_PATH_NO_TXT}\\out_hits_{nowf}.xlsx')
     print('Done! Your excel file is ready!')
-    print(f'Hits stored in: {FULL_PATH_NO_TXT}\\out_hits2_{nowf}.xlsx')
+    print(f'Hits stored in: {FULL_PATH_NO_TXT}\\out_hits_{nowf}.xlsx')
